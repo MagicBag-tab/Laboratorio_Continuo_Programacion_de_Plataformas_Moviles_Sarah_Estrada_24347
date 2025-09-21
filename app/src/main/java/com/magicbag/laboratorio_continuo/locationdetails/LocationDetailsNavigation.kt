@@ -1,0 +1,2 @@
+package com.magicbag.laboratorio_continuo.locationdetails
+

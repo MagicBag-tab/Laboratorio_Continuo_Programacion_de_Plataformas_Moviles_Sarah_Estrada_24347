@@ -1,4 +1,4 @@
-package com.magicbag.laboratorio_continuo
+package com.magicbag.laboratorio_continuo.characters
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -24,7 +24,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
-import com.magicbag.laboratorio_continuo.ui.theme.AppTheme
 import kotlinx.serialization.Serializable
 
 @Serializable
