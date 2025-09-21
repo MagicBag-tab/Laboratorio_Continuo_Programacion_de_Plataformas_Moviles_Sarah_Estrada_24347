@@ -1,4 +1,6 @@
 package com.magicbag.laboratorio_continuo.characters
 
-class CharactersNavigation {
-}
+import kotlinx.serialization.Serializable
+
+@Serializable
+data object Characters

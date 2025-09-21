@@ -1,4 +1,4 @@
-package com.magicbag.laboratorio_continuo
+package com.magicbag.laboratorio_continuo.login
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -19,11 +19,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.magicbag.laboratorio_continuo.ui.theme.AppTheme
-import kotlinx.serialization.Serializable
-
-@Serializable
-data object Login
-
 @Composable
 fun LoginScreen(
     modifier: Modifier = Modifier,
@@ -75,7 +70,7 @@ fun LoginScreen(
             text = "Sarah Estrada 24347",
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = Modifier.padding(bottom = 16.dp)
+            modifier = Modifier.padding(bottom = 56.dp)
         )
     }
 }

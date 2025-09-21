@@ -1,4 +1,6 @@
 package com.magicbag.laboratorio_continuo.locations
 
-class LocationsNavigation {
-}
+import kotlinx.serialization.Serializable
+
+@Serializable
+data object Locations

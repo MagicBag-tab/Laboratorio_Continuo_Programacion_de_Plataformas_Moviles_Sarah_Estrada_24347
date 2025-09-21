@@ -1,3 +1,8 @@
+package com.magicbag.laboratorio_continuo
+
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class Location(
     val id: Int,
     val name: String,

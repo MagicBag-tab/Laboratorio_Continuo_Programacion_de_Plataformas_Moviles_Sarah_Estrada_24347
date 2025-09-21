@@ -1,4 +1,4 @@
-package com.magicbag.laboratorio_continuo
+package com.magicbag.laboratorio_continuo.characters
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -31,11 +31,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import com.magicbag.laboratorio_continuo.Character
+import com.magicbag.laboratorio_continuo.CharacterDb
 import com.magicbag.laboratorio_continuo.ui.theme.AppTheme
-import kotlinx.serialization.Serializable
-
-@Serializable
-data object Characters
 
 @Composable
 fun CharactersScreen(
@@ -50,7 +48,7 @@ fun CharactersScreen(
     Column(
         modifier = modifier.fillMaxSize()
     ) {
-        Column(
+        Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .background(
@@ -58,36 +56,25 @@ fun CharactersScreen(
                 )
                 .height(56.dp)
                 .padding(horizontal = 16.dp),
-            verticalArrangement = Arrangement.Center
-        ) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(
-                        color = MaterialTheme.colorScheme.secondaryContainer
-                    )
-                    .height(56.dp)
-                    .padding(horizontal = 16.dp),
-                horizontalArrangement = Arrangement.spacedBy(4.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ){
-                IconButton(
-                    onClick = onBackClickLogin
-                ) {
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                        contentDescription = "Volver",
-                        tint = MaterialTheme.colorScheme.onSecondaryContainer
-                    )
-                }
-
-                Text(
-                    text = "Character Details",
-                    style = MaterialTheme.typography.titleLarge,
-                    color = MaterialTheme.colorScheme.onSecondaryContainer,
-                    fontWeight = FontWeight.Bold
+            horizontalArrangement = Arrangement.spacedBy(4.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ){
+            IconButton(
+                onClick = onBackClickLogin
+            ) {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                    contentDescription = "Volver",
+                    tint = MaterialTheme.colorScheme.onSecondaryContainer
                 )
             }
+
+            Text(
+                text = "Characters",
+                style = MaterialTheme.typography.titleLarge,
+                color = MaterialTheme.colorScheme.onSecondaryContainer,
+                fontWeight = FontWeight.Bold
+            )
         }
 
         LazyColumn(

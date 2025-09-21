@@ -1,4 +1,4 @@
-package com.magicbag.laboratorio_continuo.characters
+package com.magicbag.laboratorio_continuo.charactersprofile
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -24,18 +24,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
-import kotlinx.serialization.Serializable
-
-@Serializable
-data class CharacterProfile(
-    val id: Int,
-    val name: String,
-    val status: String,
-    val species: String,
-    val gender: String,
-    val image: String
-)
-
 
 @Composable
 fun CharacterProfileScreen(

@@ -1,4 +1,6 @@
 package com.magicbag.laboratorio_continuo.profile
 
-class ProfileNavigation {
-}
+import kotlinx.serialization.Serializable
+
+@Serializable
+data object Profile

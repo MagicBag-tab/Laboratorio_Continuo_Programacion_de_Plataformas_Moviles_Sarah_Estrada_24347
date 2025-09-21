@@ -1,4 +1,4 @@
-// import .....Location
+package com.magicbag.laboratorio_continuo
 
 class LocationDb {
     private val locations: List<Location> = listOf(
