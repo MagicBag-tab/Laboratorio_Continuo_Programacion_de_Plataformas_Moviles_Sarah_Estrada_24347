@@ -17,13 +17,19 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
+import com.magicbag.laboratorio_continuo.Character
+import com.magicbag.laboratorio_continuo.loading.hasErrorScreen
+import com.magicbag.laboratorio_continuo.loading.isLoadingScreen
 
 @Composable
 fun CharacterProfileScreen(
@@ -33,8 +39,36 @@ fun CharacterProfileScreen(
     species: String,
     gender: String,
     image: String,
+    onBackClick: () -> Unit,
+    viewModel: CharacterProfileViewModel = viewModel()
+) {
+    val state by viewModel.state.collectAsStateWithLifecycle()
+
+    when {
+        state.isLoading -> {
+            isLoadingScreen()
+        }
+        state.hasError -> {
+            hasErrorScreen(
+                onRetry = { viewModel.onRetry() }
+            )
+        }
+        else -> {
+            state.data?.let { character ->
+                CharacterProfileContent(
+                    character = character,
+                    onBackClick = onBackClick
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun CharacterProfileContent(
+    character: Character,
     onBackClick: () -> Unit
-){
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -43,7 +77,7 @@ fun CharacterProfileScreen(
             ),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(16.dp)
-    ){
+    ) {
 
         Row(
             modifier = Modifier
@@ -55,7 +89,7 @@ fun CharacterProfileScreen(
                 .padding(horizontal = 16.dp),
             horizontalArrangement = Arrangement.spacedBy(4.dp),
             verticalAlignment = Alignment.CenterVertically
-        ){
+        ) {
             IconButton(
                 onClick = onBackClick
             ) {
@@ -75,8 +109,8 @@ fun CharacterProfileScreen(
         }
 
         AsyncImage(
-            model = image,
-            contentDescription = name,
+            model = character.image,
+            contentDescription = character.name,
             modifier = Modifier
                 .size(200.dp)
                 .clip(CircleShape),
@@ -84,7 +118,7 @@ fun CharacterProfileScreen(
         )
 
         Text(
-            text = name,
+            text = character.name,
             style = MaterialTheme.typography.headlineMedium,
             fontWeight = FontWeight.Bold
         )
@@ -93,10 +127,10 @@ fun CharacterProfileScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(4.dp)
-        ){
-            Details("Species:", species)
-            Details("Status:", status)
-            Details("Gender:", gender)
+        ) {
+            Details("Species:", character.species)
+            Details("Status:", character.status)
+            Details("Gender:", character.gender)
         }
     }
 }
@@ -105,13 +139,13 @@ fun CharacterProfileScreen(
 fun Details(
     title: String,
     body: String,
-){
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 64.dp, vertical = 4.dp),
         horizontalArrangement = Arrangement.SpaceBetween
-    ){
+    ) {
         Text(
             text = title,
             fontWeight = FontWeight.Medium,

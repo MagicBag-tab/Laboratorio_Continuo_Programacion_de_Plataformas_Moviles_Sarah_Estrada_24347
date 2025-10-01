@@ -19,26 +19,53 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.magicbag.laboratorio_continuo.Location
-import com.magicbag.laboratorio_continuo.LocationDb
-import com.magicbag.laboratorio_continuo.ui.theme.AppTheme
+import com.magicbag.laboratorio_continuo.loading.hasErrorScreen
+import com.magicbag.laboratorio_continuo.loading.isLoadingScreen
 
 @Composable
 fun LocationsScreen(
     modifier: Modifier = Modifier,
+    viewModel: LocationsViewModel = viewModel(),
     onLocationClick: (Location) -> Unit = {},
     onBackClick: () -> Unit
 ) {
+    val state by viewModel.state.collectAsStateWithLifecycle()
 
-    val locationDb = remember { LocationDb() }
-    val locations = remember { locationDb.getAllLocations() }
+    when {
+        state.isLoading -> {
+            isLoadingScreen()
+        }
+        state.hasError -> {
+            hasErrorScreen(
+                onRetry = { viewModel.onRetry() }
+            )
+        }
+        else -> {
+            LocationsContent(
+                locations = state.data,
+                onLocationClick = onLocationClick,
+                onBackClick = onBackClick,
+                modifier = modifier
+            )
+        }
+    }
+}
+@Composable
+private fun LocationsContent(
+    locations: List<Location>,
+    onLocationClick: (Location) -> Unit = {},
+    onBackClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
 
     Column(
         modifier = modifier.fillMaxSize()
@@ -115,17 +142,6 @@ fun LocationItem(
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             modifier = Modifier.padding(top = 4.dp)
-        )
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun LocationsPreview() {
-    AppTheme {
-        LocationsScreen(
-            onLocationClick = {},
-            onBackClick = {}
         )
     }
 }

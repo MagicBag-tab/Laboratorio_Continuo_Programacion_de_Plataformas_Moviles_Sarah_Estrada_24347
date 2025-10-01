@@ -21,30 +21,57 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import com.magicbag.laboratorio_continuo.Character
-import com.magicbag.laboratorio_continuo.CharacterDb
-import com.magicbag.laboratorio_continuo.ui.theme.AppTheme
+import com.magicbag.laboratorio_continuo.loading.hasErrorScreen
+import com.magicbag.laboratorio_continuo.loading.isLoadingScreen
 
 @Composable
 fun CharactersScreen(
     modifier: Modifier = Modifier,
+    viewModel: CharactersViewModel = viewModel(),
     onCharacterClick: (Character) -> Unit = {},
-    onBackClickLogin: () -> Unit
+    onBackClick: () -> Unit
 ) {
+    val state by viewModel.state.collectAsStateWithLifecycle()
 
-    val characterDb = remember { CharacterDb() }
-    val characters = remember { characterDb.getAllCharacters() }
+    when {
+        state.isLoading -> {
+            isLoadingScreen()
+        }
+        state.hasError -> {
+            hasErrorScreen(
+                onRetry = { viewModel.onRetry() }
+            )
+        }
+        else -> {
+            CharactersContent(
+                characters = state.data,
+                onCharacterClick = onCharacterClick,
+                onBackClick= onBackClick,
+                modifier = modifier
+            )
+        }
+    }
+}
 
+@Composable
+private fun CharactersContent(
+    characters: List<Character>,
+    onCharacterClick: (Character) -> Unit,
+    onBackClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
     Column(
         modifier = modifier.fillMaxSize()
     ) {
@@ -58,9 +85,9 @@ fun CharactersScreen(
                 .padding(horizontal = 16.dp),
             horizontalArrangement = Arrangement.spacedBy(4.dp),
             verticalAlignment = Alignment.CenterVertically
-        ){
+        ) {
             IconButton(
-                onClick = onBackClickLogin
+                onClick = onBackClick
             ) {
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.ArrowBack,
@@ -91,7 +118,7 @@ fun CharactersScreen(
                     colors = CardDefaults.cardColors(
                         containerColor = Color.Transparent
                     )
-                ){
+                ) {
                     CharacterItem(character = character)
                 }
             }
@@ -134,16 +161,5 @@ fun CharacterItem(
                 style = MaterialTheme.typography.bodyMedium,
             )
         }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun CharactersPreview() {
-    AppTheme {
-        CharactersScreen(
-            onCharacterClick = {},
-            onBackClickLogin = {}
-        )
     }
 }

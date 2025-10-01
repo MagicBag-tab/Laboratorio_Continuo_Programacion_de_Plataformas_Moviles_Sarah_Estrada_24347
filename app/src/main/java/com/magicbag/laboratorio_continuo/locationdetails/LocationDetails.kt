@@ -15,23 +15,50 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.magicbag.laboratorio_continuo.LocationDb
-import com.magicbag.laboratorio_continuo.ui.theme.AppTheme
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.magicbag.laboratorio_continuo.Location
+import com.magicbag.laboratorio_continuo.loading.hasErrorScreen
+import com.magicbag.laboratorio_continuo.loading.isLoadingScreen
 
 @Composable
 fun LocationDetailsScreen(
     locationId: Int,
+    onBackClick: () -> Unit,
+    viewModel: LocationDetailsViewModel = viewModel()
+) {
+    val state by viewModel.state.collectAsStateWithLifecycle()
+
+    when {
+        state.isLoading -> {
+            isLoadingScreen()
+        }
+        state.hasError -> {
+            hasErrorScreen(
+                onRetry = { viewModel.onRetry() }
+            )
+        }
+        else -> {
+            state.data?.let { location ->
+                LocationDetailsContent(
+                    location = location,
+                    onBackClick = onBackClick
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun LocationDetailsContent(
+    location: Location,
     onBackClick: () -> Unit
 ) {
-    val locationDb = remember { LocationDb() }
-    val location = remember { locationDb.getLocationById(locationId) }
-
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -110,17 +137,6 @@ fun LocationDetailItem(
         Text(
             text = body,
             fontWeight = FontWeight.Normal
-        )
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun LocationDetailsPreview() {
-    AppTheme {
-        LocationDetailsScreen(
-            locationId = 1,
-            onBackClick = {}
         )
     }
 }
