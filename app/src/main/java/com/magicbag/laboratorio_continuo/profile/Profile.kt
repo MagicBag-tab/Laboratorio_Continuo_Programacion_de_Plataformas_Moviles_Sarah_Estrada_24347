@@ -14,23 +14,31 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.magicbag.laboratorio_continuo.ui.theme.AppTheme
 
 @Composable
 fun ProfileScreen(
     modifier: Modifier = Modifier,
-    onLogoutClick: () -> Unit
+    onLogoutClick: () -> Unit,
+    viewModel: ProfileViewModel = viewModel()
 ) {
+    val userName by viewModel.userName.collectAsStateWithLifecycle()
+    val state by viewModel.state.collectAsStateWithLifecycle()
+
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -85,12 +93,13 @@ fun ProfileScreen(
                     .padding(vertical = 32.dp),
                 horizontalAlignment = Alignment.Start
             ) {
-                ProfileDetail("Nombre:", "Sarah Estrada")
+                ProfileDetail("Nombre:", userName.ifEmpty { "Usuario" })
                 ProfileDetail("Carné:", "24347")
             }
 
             Button(
-                onClick = onLogoutClick,
+                onClick = { viewModel.logout(onLogoutClick) },
+                enabled = !state.isLoggingOut,
                 colors = ButtonDefaults.buttonColors(
                     containerColor = MaterialTheme.colorScheme.primaryContainer,
                     contentColor = MaterialTheme.colorScheme.onPrimaryContainer
@@ -99,10 +108,17 @@ fun ProfileScreen(
                     .fillMaxWidth(0.6f)
                     .height(48.dp)
             ) {
-                Text(
-                    text = "Cerrar sesión",
-                    style = MaterialTheme.typography.labelLarge
-                )
+                if (state.isLoggingOut) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(24.dp),
+                        color = MaterialTheme.colorScheme.onPrimaryContainer
+                    )
+                } else {
+                    Text(
+                        text = "Cerrar sesión",
+                        style = MaterialTheme.typography.labelLarge
+                    )
+                }
             }
         }
     }

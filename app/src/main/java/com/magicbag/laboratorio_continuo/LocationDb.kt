@@ -1,7 +1,9 @@
 package com.magicbag.laboratorio_continuo
 
-class LocationDb {
-    private val locations: List<Location> = listOf(
+class LocationDb(
+    private val locationDao: LocationDao
+) {
+    private val initialLocations: List<Location> = listOf(
         Location(1, "Earth (C-137)", "Planet", "Dimension C-137"),
         Location(2, "Abadango", "Cluster", "unknown"),
         Location(3, "Citadel of Ricks", "Space station", "unknown"),
@@ -24,11 +26,37 @@ class LocationDb {
         Location(20, "Earth (Replacement Dimension)", "Planet", "Replacement Dimension")
     )
 
-    fun getAllLocations(): List<Location> {
-        return locations
+    suspend fun getAllLocations(): List<Location> {
+        return locationDao.getAllLocations().map { entity ->
+            Location(
+                id = entity.id,
+                name = entity.nameLocation,
+                type = entity.type,
+                dimension = entity.dimension
+            )
+        }
     }
 
-    fun getLocationById(id: Int): Location {
-        return locations.first { it.id == id }
+    suspend fun getLocationById(id: Int): Location {
+        val entity = locationDao.getLocationById(id)
+            ?: throw NoSuchElementException("Location with id $id not found")
+
+        return Location(
+            id = entity.id,
+            name = entity.nameLocation,
+            type = entity.type,
+            dimension = entity.dimension
+        )
+    }
+
+    suspend fun populateInitialData() {
+        locationDao.insertAll(initialLocations.map { location ->
+            LocationEntity(
+                id = location.id,
+                nameLocation = location.name,
+                type = location.type,
+                dimension = location.dimension
+            )
+        })
     }
 }

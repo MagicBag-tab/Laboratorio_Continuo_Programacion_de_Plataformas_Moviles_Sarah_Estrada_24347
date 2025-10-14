@@ -1,7 +1,9 @@
 package com.magicbag.laboratorio_continuo
 
-class CharacterDb {
-    private val characters: List<Character> = listOf(
+class CharacterDb(
+    private val characterDao: CharacterDao
+) {
+    private val initialCharacters: List<Character> = listOf(
         Character(1, "Rick Sanchez", "Alive", "Human", "Male", "https://rickandmortyapi.com/api/character/avatar/1.jpeg"),
         Character(2, "Morty Smith", "Alive", "Human", "Male", "https://rickandmortyapi.com/api/character/avatar/2.jpeg"),
         Character(3, "Summer Smith", "Alive", "Human", "Female", "https://rickandmortyapi.com/api/character/avatar/3.jpeg"),
@@ -24,11 +26,43 @@ class CharacterDb {
         Character(20, "Ants in my Eyes Johnson", "unknown", "Human", "Male", "https://rickandmortyapi.com/api/character/avatar/20.jpeg")
     )
 
-    fun getAllCharacters(): List<Character> {
-        return characters
+    suspend fun getAllCharacters(): List<Character> {
+        return characterDao.getAllCharacters().map { entity ->
+            Character(
+                id = entity.id,
+                name = entity.nameCharacter,
+                status = entity.status,
+                species = entity.species,
+                gender = entity.gender,
+                image = entity.image
+            )
+        }
+    }
+    suspend fun getCharacterById(id: Int): Character {
+        val entity = characterDao.getCharacterById(id)
+            ?: throw NoSuchElementException("Character with id $id not found")
+
+        return Character(
+            id = entity.id,
+            name = entity.nameCharacter,
+            status = entity.status,
+            species = entity.species,
+            gender = entity.gender,
+            image = entity.image
+        )
     }
 
-    fun getCharacterById(id: Int): Character {
-        return characters.first { it.id == id }
+    suspend fun populateInitialData() {
+        characterDao.insertAll(initialCharacters.map { character ->
+            CharacterEntity(
+                id = character.id,
+                nameCharacter = character.name,
+                status = character.status,
+                species = character.species,
+                gender = character.gender,
+                image = character.image
+            )
+            }
+        )
     }
 }
