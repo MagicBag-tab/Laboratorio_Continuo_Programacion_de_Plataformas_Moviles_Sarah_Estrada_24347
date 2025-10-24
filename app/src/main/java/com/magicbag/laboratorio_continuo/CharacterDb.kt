@@ -1,5 +1,8 @@
 package com.magicbag.laboratorio_continuo
 
+import com.magicbag.laboratorio_continuo.data.entity.CharacterEntity
+import com.magicbag.laboratorio_continuo.data.dao.CharacterDao
+
 class CharacterDb(
     private val characterDao: CharacterDao
 ) {

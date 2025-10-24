@@ -1,10 +1,10 @@
-package com.magicbag.laboratorio_continuo
+package com.magicbag.laboratorio_continuo.data.dao
 
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.magicbag.laboratorio_continuo.CharacterEntity
+import com.magicbag.laboratorio_continuo.data.entity.CharacterEntity
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -23,5 +23,5 @@ interface CharacterDao {
     suspend fun getCharacterById(characterId: Int): CharacterEntity?
 
     @Query("DELETE FROM characters")
-    suspend fun deleteAllCharacters()
+    suspend fun deleteAll()
 }

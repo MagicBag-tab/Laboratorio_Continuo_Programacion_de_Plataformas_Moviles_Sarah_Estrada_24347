@@ -4,6 +4,10 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import com.magicbag.laboratorio_continuo.data.entity.CharacterEntity
+import com.magicbag.laboratorio_continuo.data.entity.LocationEntity
+import com.magicbag.laboratorio_continuo.data.dao.CharacterDao
+import com.magicbag.laboratorio_continuo.data.dao.LocationDao
 
 @Database(
     entities = [CharacterEntity::class, LocationEntity::class],

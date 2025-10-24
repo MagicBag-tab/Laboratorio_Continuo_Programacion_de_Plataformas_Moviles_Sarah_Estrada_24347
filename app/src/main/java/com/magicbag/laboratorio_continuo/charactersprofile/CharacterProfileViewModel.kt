@@ -1,12 +1,12 @@
 package com.magicbag.laboratorio_continuo.charactersprofile
 
+
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
-import com.magicbag.laboratorio_continuo.CharacterDb
-import com.magicbag.laboratorio_continuo.LaboratorioDatabase
+import com.magicbag.laboratorio_continuo.data.repository.CharacterRepository
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -19,20 +19,19 @@ class CharacterProfileViewModel(
     savedStateHandle: SavedStateHandle
 ) : AndroidViewModel(application) {
 
-    private val database = LaboratorioDatabase.getDatabase(application)
-    private val characterDb = CharacterDb(database.characterDao())
+    private val repository = CharacterRepository(application)
 
     private val _state = MutableStateFlow(CharacterProfileState(isLoading = true))
     val state: StateFlow<CharacterProfileState> = _state.asStateFlow()
 
-    private val characterProfile = savedStateHandle.toRoute<CharacterProfile>()
-    private val characterId = characterProfile.id
+    private val characterDetails = savedStateHandle.toRoute<CharacterProfile>()
+    private val characterId = characterDetails.id
 
     init {
-        loadCharacterProfile()
+        loadCharacterDetails()
     }
 
-    fun loadCharacterProfile() {
+    fun loadCharacterDetails() {
         _state.update {
             it.copy(
                 isLoading = true,
@@ -48,7 +47,7 @@ class CharacterProfileViewModel(
                 val randomNumber = (1..10).random()
 
                 if (randomNumber % 2 == 0) {
-                    val character = characterDb.getCharacterById(characterId)
+                    val character = repository.getCharacter(characterId)
                     _state.update {
                         it.copy(
                             isLoading = false,
@@ -78,6 +77,6 @@ class CharacterProfileViewModel(
     }
 
     fun onRetry() {
-        loadCharacterProfile()
+        loadCharacterDetails()
     }
 }

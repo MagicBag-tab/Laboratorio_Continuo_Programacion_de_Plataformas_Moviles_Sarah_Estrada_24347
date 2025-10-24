@@ -1,4 +1,4 @@
-package com.magicbag.laboratorio_continuo
+package com.magicbag.laboratorio_continuo.data.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

@@ -3,8 +3,7 @@ package com.magicbag.laboratorio_continuo.characters
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import com.magicbag.laboratorio_continuo.CharacterDb
-import com.magicbag.laboratorio_continuo.LaboratorioDatabase
+import com.magicbag.laboratorio_continuo.data.repository.CharacterRepository
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -14,8 +13,7 @@ import kotlinx.coroutines.launch
 
 class CharactersViewModel(application: Application) : AndroidViewModel(application) {
 
-    private val database = LaboratorioDatabase.getDatabase(application)
-    private val characterDb = CharacterDb(database.characterDao())
+    private val repository = CharacterRepository(application)
 
     private val _state = MutableStateFlow(CharactersState())
     val state: StateFlow<CharactersState> = _state.asStateFlow()
@@ -35,12 +33,12 @@ class CharactersViewModel(application: Application) : AndroidViewModel(applicati
 
         viewModelScope.launch {
             try {
-                delay(4000L)
+                delay(4000L) // ← Delay mantenido
 
                 val randomNumber = (1..10).random()
 
                 if (randomNumber % 2 == 0) {
-                    val characters = characterDb.getAllCharacters()
+                    val characters = repository.getCharacters()
                     _state.update {
                         it.copy(
                             isLoading = false,

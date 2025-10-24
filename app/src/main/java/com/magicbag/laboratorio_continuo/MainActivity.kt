@@ -7,6 +7,8 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.lifecycleScope
+import com.magicbag.laboratorio_continuo.data.entity.CharacterEntity
+import com.magicbag.laboratorio_continuo.data.entity.LocationEntity
 import com.magicbag.laboratorio_continuo.ui.theme.AppTheme
 import kotlinx.coroutines.launch
 

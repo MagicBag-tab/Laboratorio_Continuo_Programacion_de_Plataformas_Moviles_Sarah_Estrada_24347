@@ -1,5 +1,8 @@
 package com.magicbag.laboratorio_continuo
 
+import com.magicbag.laboratorio_continuo.data.entity.LocationEntity
+import com.magicbag.laboratorio_continuo.data.dao.LocationDao
+
 class LocationDb(
     private val locationDao: LocationDao
 ) {

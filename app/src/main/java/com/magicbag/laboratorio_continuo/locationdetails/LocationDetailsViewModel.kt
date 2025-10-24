@@ -5,8 +5,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
-import com.magicbag.laboratorio_continuo.LaboratorioDatabase
-import com.magicbag.laboratorio_continuo.LocationDb
+import com.magicbag.laboratorio_continuo.data.repository.LocationRepository
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -19,8 +18,7 @@ class LocationDetailsViewModel(
     savedStateHandle: SavedStateHandle
 ) : AndroidViewModel(application) {
 
-    private val database = LaboratorioDatabase.getDatabase(application)
-    private val locationDb = LocationDb(database.locationDao())
+    private val repository = LocationRepository(application)
 
     private val _state = MutableStateFlow(LocationDetailsState(isLoading = true))
     val state: StateFlow<LocationDetailsState> = _state.asStateFlow()
@@ -48,7 +46,7 @@ class LocationDetailsViewModel(
                 val randomNumber = (1..10).random()
 
                 if (randomNumber % 2 == 0) {
-                    val location = locationDb.getLocationById(locationId)
+                    val location = repository.getLocation(locationId)
                     _state.update {
                         it.copy(
                             isLoading = false,

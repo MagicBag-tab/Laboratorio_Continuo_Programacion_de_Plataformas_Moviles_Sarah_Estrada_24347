@@ -3,8 +3,7 @@ package com.magicbag.laboratorio_continuo.locations
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import com.magicbag.laboratorio_continuo.LaboratorioDatabase
-import com.magicbag.laboratorio_continuo.LocationDb
+import com.magicbag.laboratorio_continuo.data.repository.LocationRepository
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -14,8 +13,7 @@ import kotlinx.coroutines.launch
 
 class LocationsViewModel(application: Application) : AndroidViewModel(application) {
 
-    private val database = LaboratorioDatabase.getDatabase(application)
-    private val locationDb = LocationDb(database.locationDao())
+    private val repository = LocationRepository(application)
 
     private val _state = MutableStateFlow(LocationsState())
     val state: StateFlow<LocationsState> = _state.asStateFlow()
@@ -40,7 +38,7 @@ class LocationsViewModel(application: Application) : AndroidViewModel(applicatio
                 val randomNumber = (1..10).random()
 
                 if (randomNumber % 2 == 0) {
-                    val locations = locationDb.getAllLocations()
+                    val locations = repository.getLocations()
                     _state.update {
                         it.copy(
                             isLoading = false,
